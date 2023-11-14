@@ -25,7 +25,7 @@ const AddTripScreen = ({navigation}:AddTripScreenProps) => {
      <View className='flex justify-between h-full mx-4'>
       <View>
         <View className='relative mt-4'>
-        <View className='absolute top-0 left-0'>
+        <View className='absolute top-0 left-0 z-10'>
         <BackButton />
         </View>
         
