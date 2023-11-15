@@ -5,7 +5,7 @@ import {
   Image,
   FlatList
 } from 'react-native';
-import React from 'react';
+import React , {useEffect , useState} from 'react';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { colors } from '../theme';
 import randomImage from '../assets/images/randomImage';
@@ -15,6 +15,9 @@ import { RootStackParamList } from '../navigations/AppNavigation';
 import { useNavigation } from '@react-navigation/native';
 import BackButton from '../components/BackButton';
 import ExpenseCard from '../components/ExpenseCard';
+import { supabase } from '../lib/supabase';
+import Snackbar from 'react-native-snackbar';
+import { useAppSelector } from '../redux/hooks';
 
 const items = [
   {
@@ -40,10 +43,27 @@ const items = [
 
 type TripExpensesScreenProps = NativeStackScreenProps<RootStackParamList, 'TripExpenses'>;
 const TripExpensesScreen = (props: TripExpensesScreenProps) => {
-
+  const [expenses , setExpenses] = useState<any>([])
+  const { user } = useAppSelector(state => state.user)
   const { id, place, country } = props.route.params
-
-  const navigation = useNavigation()
+  const fetchExpenses = async() => {
+    const {data , error} = await supabase.from('expenses').select('*').eq('trip_id' , id).eq('user_id' , user.id)
+    if(error){
+      Snackbar.show({
+        text: error.message,
+       backgroundColor:'red'
+      });
+      return
+    }
+    else{
+      setExpenses(data)
+      console.log(data)
+    }
+  }
+  useEffect(()=>{
+    fetchExpenses()
+  },[])
+  
   return (
     <ScreenWrapper>
       <View className='px-4'>
@@ -79,7 +99,7 @@ const TripExpensesScreen = (props: TripExpensesScreenProps) => {
           </View>
           <View style={{ height: 430 }}>
             <FlatList
-              data={items}
+              data={expenses}
 
               ListEmptyComponent={<EmptyList message={"You haven't recorded any expenses yet !"} />}
 

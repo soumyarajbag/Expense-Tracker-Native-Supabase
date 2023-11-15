@@ -1,5 +1,5 @@
 import { View, Image , Text , TouchableOpacity , TextInput } from 'react-native'
-import React, { useState } from 'react'
+import React, {  useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { colors } from '../theme';
@@ -15,6 +15,7 @@ const AddTripScreen = ({navigation}:AddTripScreenProps) => {
   const [country , setCountry] = useState('')
   
   const {user} = useAppSelector(state=>state.user)
+  
   
   
   const handleAddTrip = async() => {

@@ -6,22 +6,23 @@ interface ExpenseCardProps {
   item: {
     id: number,
     title: string,
-    amount: number,
+    expenses: number,
     category: string
   }
 }
 const ExpenseCard = ({item}:ExpenseCardProps) => {
+  const {title , category , expenses} = item
   return (
     <View style={{backgroundColor:categoryBG[item.category]}} className='flex justify-between flex-row items-center p-3 mb-3  rounded-2xl  px-5 '> 
      <View>
-         <Text className='text-black font-bold '>{item.title}</Text>
+         <Text className='text-black font-bold '>{title}</Text>
          
-         <Text  className='text-black text-xs'>{item.category}</Text>
+         <Text  className='text-black text-xs'>{category}</Text>
 
 
      </View>
      <View>
-     <Text>${item.amount}</Text>
+     <Text>${expenses}</Text>
      </View>
     </View>
   )
