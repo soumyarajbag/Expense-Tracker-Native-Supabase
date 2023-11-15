@@ -72,7 +72,7 @@ const TripExpensesScreen = (props: TripExpensesScreenProps) => {
           <View className='flex-row justify-between items-center'>
             <Text className={`${colors.heading} font-bold text-xl`}> Expenses </Text>
             <TouchableOpacity onPress={() => {
-              props.navigation.navigate('AddExpense')
+              props.navigation.navigate('AddExpense' , {id:id})
             }} className="p-2 px-3 bg-white border border-gray-200 rounded-full">
               <Text className={colors.heading}>Add Expense</Text>
             </TouchableOpacity>

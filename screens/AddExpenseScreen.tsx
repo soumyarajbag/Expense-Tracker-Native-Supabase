@@ -1,5 +1,5 @@
 import { View, Image , Text , TouchableOpacity , TextInput } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState , useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { colors } from '../theme';
@@ -8,20 +8,53 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { categories } from '../constants';
 import { RootStackParamList } from '../navigations/AppNavigation';
+import { useAppSelector } from '../redux/hooks';
+import Snackbar from 'react-native-snackbar';
+import { supabase } from '../lib/supabase';
 type AddExpenseScreenProps = NativeStackScreenProps<RootStackParamList, 'AddExpense'>;
-const AddExpenseScreen = ({navigation}:AddExpenseScreenProps) => {
+const AddExpenseScreen = (props:AddExpenseScreenProps) => {
+  const {id} = props.route.params 
   const [title , setTitle] = useState('')
   const [expense , setExpense] = useState('')
   const [category , setCategory] = useState('')
-
-  const handleAddExpense = () => {
+  const {user} = useAppSelector(state=>state.user)
+  const handleAddExpense = async() => {
     if(title && expense && category){
-        navigation.navigate('Home')
+      if(user){
+        if(user){
+          const {error} = await supabase.from('expenses').insert({title:title , expenses:expense , category:category , trip_id:id  , user_id:user.id})
+          if(error){
+            Snackbar.show({
+              text: error.message,
+             backgroundColor:'red'
+            });
+            return
+          }
+          else{
+            Snackbar.show({
+              text: 'Expense Added Successfully !',
+             backgroundColor:'green'
+            });
+            props.navigation.navigate('Home')
+          }
+        }else{
+          Snackbar.show({
+            text: 'User Not Found !',
+           backgroundColor:'red'
+          });
+        }
+      }
     }
     else{
-      console.log("Error")
+      Snackbar.show({
+        text: 'All Fields are Required !',
+       backgroundColor:'red'
+      })
     }
   }
+  useEffect(()=>{
+
+  },[])
   return (
     <ScreenWrapper>
      <View className='flex justify-between h-full mx-4'>
