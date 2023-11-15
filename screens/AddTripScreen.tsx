@@ -14,15 +14,33 @@ const AddTripScreen = ({navigation}:AddTripScreenProps) => {
   const [place , setPlace] = useState('')
   const [country , setCountry] = useState('')
   
+  const {user} = useAppSelector(state=>state.user)
   
   
-  const handleAddTrip = () => {
-    if(place && country){
-      
-// const { error } = await supabase
-// .from('trips')
-// .insert({user_id: })
-        navigation.navigate('Home')
+  const handleAddTrip = async() => {
+    if(place && country ){
+      if(user){
+        const {error} = await supabase.from('trips').insert({place , country , user_id:user.id})
+        if(error){
+          Snackbar.show({
+            text: error.message,
+           backgroundColor:'red'
+          });
+          return
+        }
+        else{
+          Snackbar.show({
+            text: 'Trip Added Successfully !',
+           backgroundColor:'green'
+          });
+          navigation.navigate('Home')
+        }
+      }else{
+        Snackbar.show({
+          text: 'User Not Found !',
+         backgroundColor:'red'
+        });
+      }
     }
     else{
       Snackbar.show({

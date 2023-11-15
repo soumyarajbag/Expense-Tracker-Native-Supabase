@@ -1,12 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import type { RootState } from '../store'
-
+import {useEffect} from 'react'
 // Define a type for the slice state
 interface UserState {
   user: any ,
   userLoading:boolean
 }
+
 
 // Define the initial state using that type
 const initialState: UserState = {
@@ -21,7 +22,7 @@ export const userSlice = createSlice({
   reducers: {
     setUser: (state, action: PayloadAction<any>) => {
         state.user = action.payload
-        console.log(state.user)
+        
     },
     setUserLoading: (state, action: PayloadAction<boolean>) => {
         state.userLoading = action.payload
