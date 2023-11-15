@@ -2,7 +2,7 @@ import { View, Text , TouchableOpacity , Image} from 'react-native'
 import React from 'react'
 import ScreenWrapper from '../components/ScreenWrapper'
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../App';
+import { RootStackParamList } from '../navigations/AppNavigation';
 import { colors } from '../theme';
 import { useNavigation } from '@react-navigation/native';
 type WelcomeScreenProps = NativeStackScreenProps<RootStackParamList, 'Welcome' , string>;

@@ -11,7 +11,7 @@ import { colors } from '../theme';
 import randomImage from '../assets/images/randomImage';
 import EmptyList from '../components/EmptyList';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../App';
+import { RootStackParamList } from '../navigations/AppNavigation';
 import { useNavigation } from '@react-navigation/native';
 import BackButton from '../components/BackButton';
 import ExpenseCard from '../components/ExpenseCard';

@@ -5,7 +5,7 @@ import ScreenWrapper from '../components/ScreenWrapper';
 import { colors } from '../theme';
 import BackButton from '../components/BackButton';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../App';
+import { RootStackParamList } from '../navigations/AppNavigation';
 type LoginScreenProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
 const LoginScreen = () => {
   const [email , setEmail] = useState('')
