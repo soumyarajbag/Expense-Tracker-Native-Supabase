@@ -20,8 +20,11 @@ export type RootStackParamList = {
   };
   const Stack = createNativeStackNavigator<RootStackParamList>();
   function AppNavigation(): JSX.Element {
+  
+    
     const {user} = useAppSelector(state=>state.user)
     if(user){
+      return(
 <NavigationContainer>
         <Stack.Navigator
           initialRouteName="Home"
@@ -33,42 +36,30 @@ export type RootStackParamList = {
           <Stack.Screen name="TripExpenses" component={TripExpensesScreen} />
         </Stack.Navigator>
       </NavigationContainer>
+      )
+
     }
     else{
-      <NavigationContainer>
+      return(
+        <NavigationContainer>
         <Stack.Navigator
           initialRouteName="Welcome"
           screenOptions={{ headerShown: false }}
         >
-          <Stack.Screen name="Home" component={HomeScreen} />
+         
           <Stack.Screen name="Login" options={{presentation:'modal'}}  component={LoginScreen} />
           <Stack.Screen name="SignUp" options={{presentation:'modal'}} component={SignUpScreen} />
           <Stack.Screen name="Welcome" component={WelcomeScreen} />
-          <Stack.Screen name="AddTrip" component={AddTripScreen} />
-          <Stack.Screen name="AddExpense" component={AddExpenseScreen} />
-          <Stack.Screen name="TripExpenses" component={TripExpensesScreen} />
+        
         </Stack.Navigator>
       </NavigationContainer>
-    }
-    return (
+      )
      
-   <NavigationContainer>
-        <Stack.Navigator
-          initialRouteName="Welcome"
-          screenOptions={{ headerShown: false }}
-        >
-          <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="Login" options={{presentation:'modal'}}  component={LoginScreen} />
-          <Stack.Screen name="SignUp" options={{presentation:'modal'}} component={SignUpScreen} />
-          <Stack.Screen name="Welcome" component={WelcomeScreen} />
-          <Stack.Screen name="AddTrip" component={AddTripScreen} />
-          <Stack.Screen name="AddExpense" component={AddExpenseScreen} />
-          <Stack.Screen name="TripExpenses" component={TripExpensesScreen} />
-        </Stack.Navigator>
-      </NavigationContainer>
+    }
+   
     
      
-    );
+    
   }
   
   export default AppNavigation;

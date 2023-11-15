@@ -5,24 +5,62 @@ import ScreenWrapper from '../components/ScreenWrapper';
 import { colors } from '../theme';
 import BackButton from '../components/BackButton';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import Snackbar from 'react-native-snackbar';
 import { RootStackParamList } from '../navigations/AppNavigation';
+import { supabase } from '../lib/supabase';
+import { useAppDispatch } from '../redux/hooks';
+import { setUser } from '../redux/slices/users';
 type SignUpScreenProps = NativeStackScreenProps<RootStackParamList, 'SignUp'>;
 const SignUpScreen = () => {
   const [email , setEmail] = useState('')
   const [password , setPassword] = useState('')
   const [name , setName] = useState('')
+  const dispatch = useAppDispatch()
     const navigation = useNavigation()
 
-  const handleSubmit = () => {
+  const handleSubmit = async() => {
     if(email && password){
-      navigation.goBack()
-        navigation.navigate('Home')
-       
+      const {data , error} = await supabase.auth.signUp({
+        email : email ,
+        password : password ,
+        options : {
+          data:{
+            name:name
+          }
+        }
+      })
+      if(error){
+        Snackbar.show({
+          text: error.message,
+         backgroundColor:'red'
+        });
+      }
+        else if(data?.user){
+         const {data:sign , error } =  await supabase.auth.signInWithPassword({
+            email:email,
+            password:password
+          })
+          if(sign?.user){
+            Snackbar.show({
+              text: 'Account Created Successfully !',
+             backgroundColor:'green'
+            });
+            await supabase.from('users').insert({id:data?.user.id , name:name , email:email})
+            dispatch(setUser(data?.user))
+            console.log(data?.user)
+          }
+        }
+        
+      }
+      else{
+        Snackbar.show({
+          text: 'Email and Password are required !',
+         backgroundColor:'red'
+        });
+      }
     }
-    else{
-      console.log("Error")
-    }
-  }
+    
+  
   return (
     <ScreenWrapper>
      <View className='flex justify-between h-full mx-4'>
