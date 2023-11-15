@@ -13,6 +13,7 @@ import EmptyList from '../components/EmptyList';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigations/AppNavigation';
 import { useNavigation } from '@react-navigation/native';
+import { supabase } from '../lib/supabase';
 
 const items = [
     {
@@ -50,14 +51,21 @@ const items = [
   type HomeScreenProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
 const HomeScreen = ({navigation}:HomeScreenProps) => {
   
+  const handleSignOut = async()=>{
+    
+const { error } = await supabase.auth.signOut()
+if(error){
+  console.log(error.message)
+}
+  }
   return (
     <ScreenWrapper>
       <View className="flex-row p-4 justify-between items-center">
         <Text className={`${colors.heading} font-bold text-3xl shadow-sm`}>
           Expensify
         </Text>
-        <TouchableOpacity className="p-2 px-3 bg-white border border-gray-200 rounded-full">
-          <Text className={colors.heading}>Logout</Text>
+        <TouchableOpacity  onPress={handleSignOut} className="p-2 px-3 bg-white border border-gray-200 rounded-full">
+          <Text className={colors.heading} >Logout</Text>
         </TouchableOpacity>
       </View>
       <View className="flex-row justify-center items-center bg-blue-200 rounded-xl mx-4 mb-4">

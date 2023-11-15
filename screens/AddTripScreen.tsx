@@ -6,19 +6,29 @@ import { colors } from '../theme';
 import BackButton from '../components/BackButton';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigations/AppNavigation';
-
+import Snackbar from 'react-native-snackbar';
+import { supabase } from '../lib/supabase';
+import { useAppSelector } from '../redux/hooks';
 type AddTripScreenProps = NativeStackScreenProps<RootStackParamList, 'AddTrip'>;
 const AddTripScreen = ({navigation}:AddTripScreenProps) => {
   const [place , setPlace] = useState('')
   const [country , setCountry] = useState('')
   
-
+  
+  
   const handleAddTrip = () => {
     if(place && country){
+      
+// const { error } = await supabase
+// .from('trips')
+// .insert({user_id: })
         navigation.navigate('Home')
     }
     else{
-      console.log("Error")
+      Snackbar.show({
+        text: 'Place and Country are Required !',
+       backgroundColor:'red'
+      });
     }
   }
   return (

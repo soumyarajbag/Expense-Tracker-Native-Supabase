@@ -8,18 +8,21 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Snackbar from 'react-native-snackbar';
 import { RootStackParamList } from '../navigations/AppNavigation';
 import { supabase } from '../lib/supabase';
-import { useAppDispatch } from '../redux/hooks';
-import { setUser } from '../redux/slices/users';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import Loading from '../components/Loading';
+import { setUserLoading } from '../redux/slices/users';
 type SignUpScreenProps = NativeStackScreenProps<RootStackParamList, 'SignUp'>;
 const SignUpScreen = () => {
   const [email , setEmail] = useState('')
   const [password , setPassword] = useState('')
   const [name , setName] = useState('')
   const dispatch = useAppDispatch()
+  const {userLoading} = useAppSelector(state=>state.user)
     const navigation = useNavigation()
 
   const handleSubmit = async() => {
     if(email && password){
+      dispatch(setUserLoading(true))
       const {data , error} = await supabase.auth.signUp({
         email : email ,
         password : password ,
@@ -29,6 +32,7 @@ const SignUpScreen = () => {
           }
         }
       })
+      dispatch(setUserLoading(false))
       if(error){
         Snackbar.show({
           text: error.message,
@@ -38,7 +42,7 @@ const SignUpScreen = () => {
         else if(data?.user){
          const {data:sign , error } =  await supabase.auth.signInWithPassword({
             email:email,
-            password:password
+            password:password 
           })
           if(sign?.user){
             Snackbar.show({
@@ -46,7 +50,7 @@ const SignUpScreen = () => {
              backgroundColor:'green'
             });
             await supabase.from('users').insert({id:data?.user.id , name:name , email:email})
-            dispatch(setUser(data?.user))
+            // dispatch(setUser(data?.user))
             console.log(data?.user)
           }
         }
@@ -88,11 +92,16 @@ const SignUpScreen = () => {
 
       </View>
 
-      <View>
-        <TouchableOpacity onPress={handleSubmit} className='my-6 rounded-full p-3 shadow-sm mx-2' style={{backgroundColor:colors.button}}>
-        <Text className='text-center text-white text-lg font-bold'>Sign Up</Text>
-        </TouchableOpacity>
-      </View>
+      {userLoading ?
+          (
+            <Loading />
+          )  :
+          (
+            <TouchableOpacity onPress={handleSubmit} className='my-6 rounded-full p-3 shadow-sm mx-2' style={{backgroundColor:colors.button}}>
+            <Text className='text-center text-white text-lg font-bold'>Sign Up</Text>
+            </TouchableOpacity>
+          )
+      }
      </View>
     </ScreenWrapper>
   )

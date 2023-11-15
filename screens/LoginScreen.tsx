@@ -6,20 +6,47 @@ import { colors } from '../theme';
 import BackButton from '../components/BackButton';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigations/AppNavigation';
+import Snackbar from 'react-native-snackbar';
+import { supabase } from '../lib/supabase';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import Loading from '../components/Loading';
+import { setUserLoading } from '../redux/slices/users';
 type LoginScreenProps = NativeStackScreenProps<RootStackParamList, 'Login'>;
 const LoginScreen = () => {
   const [email , setEmail] = useState('')
   const [password , setPassword] = useState('')
+  const {userLoading} = useAppSelector(state=>state.user)
     const navigation = useNavigation()
-
-  const handleSubmit = () => {
+  const dispatch = useAppDispatch()
+  const handleSubmit = async() => {
     if(email && password){
-      navigation.goBack()
-        navigation.navigate('Home')
+      dispatch(setUserLoading(true))
+     const {data , error } = await supabase.auth.signInWithPassword({
+      email : email , 
+      password : password
+     })
+     dispatch(setUserLoading(false))
+     if(error){
+      Snackbar.show({
+        text: error.message,
+       backgroundColor:'red'
+      });
+     }
+     else if(data?.user){
+     
+      Snackbar.show({
+        text: 'Logged In Successfully !',
+       backgroundColor:'green'
+      });
+      
+     }
        
     }
     else{
-      console.log("Error")
+      Snackbar.show({
+        text: 'Email and Password are Required !',
+       backgroundColor:'red'
+      });
     }
   }
   return (
@@ -50,9 +77,17 @@ const LoginScreen = () => {
       </View>
 
       <View>
-        <TouchableOpacity onPress={handleSubmit} className='my-6 rounded-full p-3 shadow-sm mx-2' style={{backgroundColor:colors.button}}>
-        <Text className='text-center text-white text-lg font-bold'>Sign In</Text>
-        </TouchableOpacity>
+        {userLoading ?
+          (
+            <Loading />
+          )  :
+          (
+            <TouchableOpacity onPress={handleSubmit} className='my-6 rounded-full p-3 shadow-sm mx-2' style={{backgroundColor:colors.button}}>
+            <Text className='text-center text-white text-lg font-bold'>Sign In</Text>
+            </TouchableOpacity>
+          )
+      }
+     
       </View>
      </View>
     </ScreenWrapper>
